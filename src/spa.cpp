@@ -87,7 +87,7 @@ namespace sba
     //                    ; (p1-p2)^2 = s1*K_12 with weight w
 
     ifstream ifs(fname);
-    if (ifs == NULL)
+    if (!ifs.is_open())
       {
         cout << "Can't open file " << fname << endl;
         return false;
@@ -836,10 +836,10 @@ namespace sba
     // check the matrix and vector
     for (int i=0; i<6*nFree; i++)
       for (int j=0; j<6*nFree; j++)
-        if (isnan(A(i,j)) ) { printf("[SetupSys] NaN in A\n"); *(int *)0x0 = 0; }
+        if (std::isnan(A(i,j)) ) { printf("[SetupSys] NaN in A\n"); *(int *)0x0 = 0; }
 
     for (int j=0; j<6*nFree; j++)
-      if (isnan(B[j]) ) { printf("[SetupSys] NaN in B\n"); *(int *)0x0 = 0; }
+      if (std::isnan(B[j]) ) { printf("[SetupSys] NaN in B\n"); *(int *)0x0 = 0; }
 
     int ndc = 0;
     for (int i=0; i<nFree; i++)
@@ -1127,7 +1127,7 @@ namespace sba
   void SysSPA::writeSparseA(char *fname, bool useCSparse)
   {
     ofstream ofs(fname);
-    if (ofs == NULL)
+    if (!ofs.is_open())
       {
         cout << "Can't open file " << fname << endl;
         return;
@@ -1192,7 +1192,7 @@ namespace sba
       node = 0;
     dist[node] = 0.0;
     multimap<double,int> open;  // open list, priority queue - can have duplicates
-    open.insert(make_pair<double,int>(0.0,node));
+    open.insert(std::make_pair<double,int>(0.0,int(node)));
 
     // do breadth-first computation
     while (!open.empty())
@@ -1230,7 +1230,7 @@ namespace sba
               {
                 // set priority queue
                 dist[nn] = di+dd;
-                open.insert(make_pair<double,int>(di+dd,nn));
+                open.insert(std::make_pair<double,int>(di+dd, int(nn)));
                 // update initial pose
                 Vector4d trans;
                 trans.head(3) = tmean;
